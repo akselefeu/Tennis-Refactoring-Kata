@@ -27,14 +27,12 @@ namespace Tennis
             {
                 return GetEqualScore(_player1.Score);
             }
-            else if (_player1.Score >= 4 || _player2.Score >= 4)
+            if (_player1.Score >= 4 || _player2.Score >= 4)
             {
-                return GetAdvantageOrWinScore(_player1.Score, _player2.Score);
+                return GetAdvantageOrWinScore(_player1, _player2);
             }
-            else
-            {
-                return GetScoreName(_player1.Score) + "-" + GetScoreName(_player2.Score);
-            }
+            
+            return GetScoreName(_player1.Score) + "-" + GetScoreName(_player2.Score);
         }
 
         private static string GetScoreName(int score)
@@ -64,20 +62,18 @@ namespace Tennis
                     return "Fifteen-All";
                 case 2:
                     return "Thirty-All";
-                case 3:
-                    return "Deuce";
                 default:
                     return "Deuce";
             }
         }
 
-        private static string GetAdvantageOrWinScore(int score1, int score2)
+        private static string GetAdvantageOrWinScore(Player player1, Player player2)
         {
-            var minusResult = score1 - score2;
-            if (minusResult == 1) return "Advantage player1";
-            else if (minusResult == -1) return "Advantage player2";
-            else if (minusResult >= 2) return "Win for player1";
-            return "Win for player2";       
+            var minusResult = player1.Score - player2.Score;
+            if (minusResult == 1) return $"Advantage {player1.Name}";
+            if (minusResult == -1) return $"Advantage {player2.Name}";
+            if (minusResult >= 2) return $"Win for {player1.Name}";
+            return $"Win for {player2.Name}";
         }
     }
 }
