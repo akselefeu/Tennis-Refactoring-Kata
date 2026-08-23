@@ -54,17 +54,11 @@ namespace Tennis
 
         private static string GetEqualScore(int score)
         {
-            switch (score)
+            if (score <= 2)
             {
-                case 0:
-                    return "Love-All";
-                case 1:
-                    return "Fifteen-All";
-                case 2:
-                    return "Thirty-All";
-                default:
-                    return "Deuce";
+                return $"{GetScoreName(score)}-All";
             }
+            return "Deuce";
         }
 
         private static string GetAdvantageOrWinScore(Player player1, Player player2)
