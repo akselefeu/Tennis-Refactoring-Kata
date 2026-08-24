@@ -17,8 +17,10 @@ namespace Tennis
         {
             if (_player1.Name == playerName)
                 _player1.AddPoint();
-            else
+            if (_player2.Name == playerName)
+            {
                 _player2.AddPoint();
+            }
         }
 
         public string GetScore()
@@ -68,6 +70,22 @@ namespace Tennis
             if (minusResult == -1) return $"Advantage {player2.Name}";
             if (minusResult >= 2) return $"Win for {player1.Name}";
             return $"Win for {player2.Name}";
+        }
+    }
+    public class Player
+    {
+        public string Name { get; }
+        public int Score { get; private set; }
+
+        public Player(string name)
+        {
+            Name = name;
+            Score = 0;
+        }
+
+        public void AddPoint()
+        {
+            Score++;
         }
     }
 }
