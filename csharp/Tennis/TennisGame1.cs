@@ -4,13 +4,13 @@ namespace Tennis
 {
     public class TennisGame1 : ITennisGame
     {
-        private readonly Player _player1;
-        private readonly Player _player2;
+        private readonly Player1 _player1;
+        private readonly Player1 _player2;
 
         public TennisGame1(string player1Name, string player2Name)
         {
-            _player1 = new Player(player1Name);
-            _player2 = new Player(player2Name);
+            _player1 = new Player1(player1Name);
+            _player2 = new Player1(player2Name);
         }
 
         public void WonPoint(string playerName)
@@ -63,7 +63,7 @@ namespace Tennis
             return "Deuce";
         }
 
-        private static string GetAdvantageOrWinScore(Player player1, Player player2)
+        private static string GetAdvantageOrWinScore(Player1 player1, Player1 player2)
         {
             var minusResult = player1.Score - player2.Score;
             if (minusResult == 1) return $"Advantage {player1.Name}";
@@ -72,12 +72,12 @@ namespace Tennis
             return $"Win for {player2.Name}";
         }
     }
-    public class Player
+    public class Player1
     {
         public string Name { get; }
         public int Score { get; private set; }
 
-        public Player(string name)
+        public Player1(string name)
         {
             Name = name;
             Score = 0;
