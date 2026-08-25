@@ -99,6 +99,10 @@ public class TennisGame7 : ITennisGame
         };
         return scoretext;
     }
+    private static string TieGame(Player7 player1, Player7 player2)
+    {
+        return $"{ScoreName(player1.Score)}-All";
+    }
 }
 
 public class Player7
