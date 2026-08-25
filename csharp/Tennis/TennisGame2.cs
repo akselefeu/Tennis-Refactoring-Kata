@@ -2,142 +2,135 @@ namespace Tennis
 {
     public class TennisGame2 : ITennisGame
     {
-        private int p1point;
-        private int p2point;
 
-        private string p1res = "";
-        private string p2res = "";
-        private string player1Name;
-        private string player2Name;
+        private Player2 player1;
+        private Player2 player2;
+        
 
         public TennisGame2(string player1Name, string player2Name)
         {
-            this.player1Name = player1Name;
-            p1point = 0;
-            this.player2Name = player2Name;
+            player1 = new Player2(player1Name);
+            player2 = new Player2(player2Name);
         }
 
         public string GetScore()
         {
-            var score = "";
-            if (p1point == p2point && p1point < 3)
+            if (player1.Score == player2.Score && player1.Score < 3)
             {
-                if (p1point == 0)
-                    score = "Love";
-                if (p1point == 1)
-                    score = "Fifteen";
-                if (p1point == 2)
-                    score = "Thirty";
-                score += "-All";
+                return EqualAndNotDeuce(player1.Score);
             }
-            if (p1point == p2point && p1point > 2)
-                score = "Deuce";
+            if (player1.Score == player2.Score && player1.Score > 2)
+                return "Deuce";
 
-            if (p1point > 0 && p2point == 0)
+            if (player1.Score > 0 && player2.Score == 0 && player1.Score < 4)
             {
-                if (p1point == 1)
-                    p1res = "Fifteen";
-                if (p1point == 2)
-                    p1res = "Thirty";
-                if (p1point == 3)
-                    p1res = "Forty";
-
-                p2res = "Love";
-                score = p1res + "-" + p2res;
+                return DetermineScoreNameNormal(player1.Score, player2.Score);
             }
-            if (p2point > 0 && p1point == 0)
+            if (player2.Score > 0 && player1.Score == 0 && player2.Score < 4)
             {
-                if (p2point == 1)
-                    p2res = "Fifteen";
-                if (p2point == 2)
-                    p2res = "Thirty";
-                if (p2point == 3)
-                    p2res = "Forty";
-
-                p1res = "Love";
-                score = p1res + "-" + p2res;
+                return DetermineScoreNameNormal(player1.Score, player2.Score);
             }
 
-            if (p1point > p2point && p1point < 4)
+            if (player1.Score > player2.Score && player1.Score < 4 && player2.Score > 0)
             {
-                if (p1point == 2)
-                    p1res = "Thirty";
-                if (p1point == 3)
-                    p1res = "Forty";
-                if (p2point == 1)
-                    p2res = "Fifteen";
-                if (p2point == 2)
-                    p2res = "Thirty";
-                score = p1res + "-" + p2res;
+                return DetermineScoreNameNormal(player1.Score, player2.Score);
             }
-            if (p2point > p1point && p2point < 4)
+            if (player2.Score > player1.Score && player2.Score < 4 && player1.Score > 0)
             {
-                if (p2point == 2)
-                    p2res = "Thirty";
-                if (p2point == 3)
-                    p2res = "Forty";
-                if (p1point == 1)
-                    p1res = "Fifteen";
-                if (p1point == 2)
-                    p1res = "Thirty";
-                score = p1res + "-" + p2res;
+                return DetermineScoreNameNormal(player1.Score, player2.Score);
             }
 
-            if (p1point > p2point && p2point >= 3)
+            if (player1.Score > player2.Score && player2.Score >= 3 && (player1.Score - player2.Score) == 1)
             {
-                score = "Advantage player1";
+                return $"Advantage {player1.Name}";
             }
 
-            if (p2point > p1point && p1point >= 3)
+            if (player2.Score > player1.Score && player1.Score >= 3 && (player2.Score - player1.Score) == 1)
             {
-                score = "Advantage player2";
+                return $"Advantage {player2.Name}";
             }
 
-            if (p1point >= 4 && p2point >= 0 && (p1point - p2point) >= 2)
+            if (player1.Score >= 4 && (player1.Score - player2.Score) >= 2)
             {
-                score = "Win for player1";
+                return $"Win for {player1.Name}";
             }
-            if (p2point >= 4 && p1point >= 0 && (p2point - p1point) >= 2)
+            if (player2.Score >= 4 && (player2.Score - player1.Score) >= 2)
             {
-                score = "Win for player2";
+                return $"Win for {player2.Name}";
             }
-            return score;
+            return "";
         }
-
-        public void SetP1Score(int number)
-        {
-            for (int i = 0; i < number; i++)
-            {
-                P1Score();
-            }
-        }
-
-        public void SetP2Score(int number)
-        {
-            for (var i = 0; i < number; i++)
-            {
-                P2Score();
-            }
-        }
-
-        private void P1Score()
-        {
-            p1point++;
-        }
-
-        private void P2Score()
-        {
-            p2point++;
-        }
+        
 
         public void WonPoint(string player)
         {
-            if (player == "player1")
-                P1Score();
-            else
-                P2Score();
+            if (player == player1.Name)
+                player1.AddPoint();
+            else if (player == player2.Name)
+                player2.AddPoint();
         }
 
+        private static string GetPointName(int point)
+        {
+            switch (point)
+            {
+                case 0:
+                    return "Love";
+                case 1:
+                    return "Fifteen";
+                case 2:
+                    return "Thirty";
+                case 3:
+                    return "Forty";
+                default:
+                    return "";
+            }
+        }
+
+        private static string EqualAndNotDeuce(int pPoint)
+        {
+            string score = GetPointName(pPoint);
+            score += "-All";
+            return score;
+        }
+
+        private static string DetermineScoreNameNormal(int player1score, int player2score)
+        {
+            string p1Res = "";
+            string p2Res = "";
+
+            if (player1score > player2score)
+            {
+                p1Res = GetPointName(player1score);
+                p2Res = GetPointName(player2score);
+                string score = p1Res + "-" + p2Res;
+                return score; 
+            }
+            if (player1score < player2score)
+            {
+                p2Res = GetPointName(player2score);
+                p1Res = GetPointName(player1score);
+                string score = p1Res + "-" + p2Res;
+                return score;
+            }
+
+            return "";
+        }
+    }
+    public class Player2
+    {
+        public string Name { get; }
+        public int Score { get; private set; }
+
+        public Player2(string name)
+        {
+            Name = name;
+            Score = 0;
+        }
+
+        public void AddPoint()
+        {
+            Score++;
+        }
     }
 }
-
