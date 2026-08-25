@@ -25,22 +25,7 @@ public class TennisGame7 : ITennisGame
 
         if (_player1.Score == _player2.Score)
         {
-            // tie score
-            switch (_player1.Score)
-            {
-                case 0:
-                    result += "Love-All";
-                    break;
-                case 1:
-                    result += "Fifteen-All";
-                    break;
-                case 2:
-                    result += "Thirty-All";
-                    break;
-                default:
-                    result += "Deuce";
-                    break;
-            }
+            result += TieGame(_player1, _player2);
         }
         else if (_player1.Score >= 4 || _player2.Score >= 4)
         {
@@ -99,7 +84,7 @@ public class TennisGame7 : ITennisGame
     }
     private static string TieGame(Player7 player1, Player7 player2)
     {
-        return $"{ScoreName(player1.Score)}-All";
+        return player1.Score < 3 ? $"{ScoreName(player1.Score)}-All" : "Deuce";
     }
 }
 
