@@ -21,23 +21,22 @@ public class TennisGame7 : ITennisGame
 
     public string GetScore()
     {
-        string result = "Current score: ";
-
+        string coreScore = CalculateCoreScore();
+        return $"Current score: {coreScore}, enjoy your game!";
+    }
+    private string CalculateCoreScore()
+    {
         if (_player1.Score == _player2.Score)
         {
-            result += TieScore(_player1, _player2);
+            return TieScore(_player1, _player2);
         }
-        else if (_player1.Score >= 4 || _player2.Score >= 4)
+        
+        if (_player1.Score >= 4 || _player2.Score >= 4)
         {
-            result += EndGameScore(_player1, _player2);
+            return EndGameScore(_player1, _player2);
         }
-        else
-        {
-            // regular score
-            result += RegularScore(_player1, _player2);
-        }
-
-        return result + ", enjoy your game!";
+        
+        return RegularScore(_player1, _player2);
     }
 
     private static string RegularScore(Player7 player1, Player7 player2)
