@@ -87,6 +87,18 @@ public class TennisGame7 : ITennisGame
 
         return result + ", enjoy your game!";
     }
+    
+    private static string ScoreName(int score)
+    {
+        string scoretext = score switch
+        {
+            0 => "Love",
+            1 => "Fifteen",
+            2 => "Thirty",
+            _ => "Forty"
+        };
+        return scoretext;
+    }
 }
 
 public class Player7
