@@ -88,3 +88,20 @@ public class TennisGame7 : ITennisGame
         return result + ", enjoy your game!";
     }
 }
+
+public class Player7
+{
+    public string Name { get; }
+    public int Score { get; private set; }
+
+    public Player7(string name)
+    {
+        Name = name;
+        Score = 0;
+    }
+
+    public void AddPoint()
+    {
+        Score++;
+    }
+}
