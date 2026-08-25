@@ -2,89 +2,89 @@ namespace Tennis;
 
 public class TennisGame7 : ITennisGame
 {
-    private int player1Score;
-    private int player2Score;
-    private string player1Name;
-    private string player2Name;
+    private Player7 _player1;
+    private Player7 _player2;
 
     public TennisGame7(string player1Name, string player2Name)
     {
-        this.player1Name = player1Name;
-        this.player2Name = player2Name;
+        _player1 = new Player7(player1Name);
+        _player2 = new Player7(player2Name);
     }
 
     public void WonPoint(string playerName)
     {
-        if (playerName == player1Name)
-            player1Score++;
-        else
-            player2Score++;
+        if (_player1.Name == playerName)
+            _player1.AddPoint();
+        else if (_player2.Name == playerName)
+            _player2.AddPoint();
     }
 
     public string GetScore()
     {
-        string result = "Current score: ";
-
-        if (player1Score == player2Score)
+        return $"Current score: {CalculateCoreScore()}, enjoy your game!";
+    }
+    private string CalculateCoreScore()
+    {
+        if (_player1.Score == _player2.Score)
         {
-            // tie score
-            switch (player1Score)
-            {
-                case 0:
-                    result += "Love-All";
-                    break;
-                case 1:
-                    result += "Fifteen-All";
-                    break;
-                case 2:
-                    result += "Thirty-All";
-                    break;
-                default:
-                    result += "Deuce";
-                    break;
-            }
+            return TieScore(_player1, _player2);
         }
-        else if (player1Score >= 4 || player2Score >= 4)
+        
+        if (_player1.Score >= 4 || _player2.Score >= 4)
         {
-            // end-game score
-            switch (player1Score - player2Score)
-            {
-                case 1:
-                    result += $"Advantage {player1Name}";
-                    break;
-                case -1:
-                    result += $"Advantage {player2Name}";
-                    break;
-                case >= 2:
-                    result += $"Win for {player1Name}";
-                    break;
-                default:
-                    result += $"Win for {player2Name}";
-                    break;
-            }
+            return EndGameScore(_player1, _player2);
         }
-        else
+        
+        return RegularScore(_player1, _player2);
+    }
+
+    private static string RegularScore(Player7 player1, Player7 player2)
+    {
+        return $"{ScoreName(player1.Score)}-{ScoreName(player2.Score)}";
+    }
+
+    private static string EndGameScore(Player7 player1, Player7 player2)
+    {
+        return (player1.Score - player2.Score) switch
         {
-            // regular score
-            result += player1Score switch
-            {
-                0 => "Love",
-                1 => "Fifteen",
-                2 => "Thirty",
-                _ => "Forty"
-            };
+            1 => $"Advantage {player1.Name}",
+            -1 => $"Advantage {player2.Name}",
+            >= 2 => $"Win for {player1.Name}",
+            _ => $"Win for {player2.Name}"
+        };
+    }
+    
+    
+    private static string ScoreName(int score)
+    {
+        string scoretext = score switch
+        {
+            0 => "Love",
+            1 => "Fifteen",
+            2 => "Thirty",
+            _ => "Forty"
+        };
+        return scoretext;
+    }
+    private static string TieScore(Player7 player1, Player7 player2)
+    {
+        return player1.Score < 3 ? $"{ScoreName(player1.Score)}-All" : "Deuce";
+    }
+}
 
-            result += "-";
+public class Player7
+{
+    public string Name { get; }
+    public int Score { get; private set; }
 
-            result += player2Score switch
-            {
-                0 => "Love",
-                1 => "Fifteen",
-                2 => "Thirty",
-                _ => "Forty"
-            };
-        }
+    public Player7(string name)
+    {
+        Name = name;
+        Score = 0;
+    }
 
-        return result + ", enjoy your game!";
+    public void AddPoint()
+    {
+        Score++;
     }
 }
