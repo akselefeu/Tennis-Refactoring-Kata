@@ -1,81 +1,91 @@
+using System;
+
 namespace Tennis
 {
     public class TennisGame1 : ITennisGame
     {
-        private int m_score1 = 0;
-        private int m_score2 = 0;
-        private string player1Name;
-        private string player2Name;
+        private readonly Player _player1;
+        private readonly Player _player2;
 
         public TennisGame1(string player1Name, string player2Name)
         {
-            this.player1Name = player1Name;
-            this.player2Name = player2Name;
+            _player1 = new Player(player1Name);
+            _player2 = new Player(player2Name);
         }
 
         public void WonPoint(string playerName)
         {
-            if (playerName == "player1")
-                m_score1 += 1;
-            else
-                m_score2 += 1;
+            if (_player1.Name == playerName)
+                _player1.AddPoint();
+            if (_player2.Name == playerName)
+            {
+                _player2.AddPoint();
+            }
         }
 
         public string GetScore()
         {
-            string score = "";
-            var tempScore = 0;
-            if (m_score1 == m_score2)
+            if (_player1.Score == _player2.Score)
             {
-                switch (m_score1)
-                {
-                    case 0:
-                        score = "Love-All";
-                        break;
-                    case 1:
-                        score = "Fifteen-All";
-                        break;
-                    case 2:
-                        score = "Thirty-All";
-                        break;
-                    default:
-                        score = "Deuce";
-                        break;
+                return GetEqualScore(_player1.Score);
+            }
+            if (_player1.Score >= 4 || _player2.Score >= 4)
+            {
+                return GetAdvantageOrWinScore(_player1, _player2);
+            }
+            
+            return GetScoreName(_player1.Score) + "-" + GetScoreName(_player2.Score);
+        }
 
-                }
-            }
-            else if (m_score1 >= 4 || m_score2 >= 4)
+        private static string GetScoreName(int score)
+        {
+            switch (score)
             {
-                var minusResult = m_score1 - m_score2;
-                if (minusResult == 1) score = "Advantage player1";
-                else if (minusResult == -1) score = "Advantage player2";
-                else if (minusResult >= 2) score = "Win for player1";
-                else score = "Win for player2";
+                case 0:
+                    return "Love";
+                case 1:
+                    return "Fifteen";
+                case 2:
+                    return "Thirty";
+                case 3:
+                    return "Forty";
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(score));
             }
-            else
+        }
+
+        private static string GetEqualScore(int score)
+        {
+            if (score <= 2)
             {
-                for (var i = 1; i < 3; i++)
-                {
-                    if (i == 1) tempScore = m_score1;
-                    else { score += "-"; tempScore = m_score2; }
-                    switch (tempScore)
-                    {
-                        case 0:
-                            score += "Love";
-                            break;
-                        case 1:
-                            score += "Fifteen";
-                            break;
-                        case 2:
-                            score += "Thirty";
-                            break;
-                        case 3:
-                            score += "Forty";
-                            break;
-                    }
-                }
+                return $"{GetScoreName(score)}-All";
             }
-            return score;
+            return "Deuce";
+        }
+
+        private static string GetAdvantageOrWinScore(Player player1, Player player2)
+        {
+            var minusResult = player1.Score - player2.Score;
+            if (minusResult == 1) return $"Advantage {player1.Name}";
+            if (minusResult == -1) return $"Advantage {player2.Name}";
+            if (minusResult >= 2) return $"Win for {player1.Name}";
+            return $"Win for {player2.Name}";
+        }
+    }
+    public class Player
+    {
+        public string Name { get; }
+        public int Score { get; private set; }
+
+        public Player(string name)
+        {
+            Name = name;
+            Score = 0;
+        }
+
+        public void AddPoint()
+        {
+            Score++;
         }
     }
 }
