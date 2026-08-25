@@ -2,100 +2,100 @@ namespace Tennis;
 
 public class TennisGame6 : ITennisGame
 {
-    private int player1Score;
-    private int player2Score;
-    private string player1Name;
-    private string player2Name;
+    private Player6 _player1;
+    private Player6 _player2;
+
 
     public TennisGame6(string player1Name, string player2Name)
     {
-        this.player1Name = player1Name;
-        this.player2Name = player2Name;
+        _player1 = new Player6(player1Name);
+        _player2 = new Player6(player2Name);
     }
 
     public void WonPoint(string playerName)
     {
-        if (playerName == player1Name)
-            player1Score++;
-        else
-            player2Score++;
+        if (_player1.Name == playerName)
+            _player1.AddPoint();
+        else if (_player2.Name == playerName)
+            _player2.AddPoint();
     }
 
     public string GetScore()
     {
         string result;
-
-        if (player1Score == player2Score)
+        if (_player1.Score == _player2.Score)
         {
-            // tie score
-            string tieScore;
-            switch (player1Score)
-            {
-                case 0:
-                    tieScore = "Love-All";
-                    break;
-                case 1:
-                    tieScore = "Fifteen-All";
-                    break;
-                case 2:
-                    tieScore = "Thirty-All";
-                    break;
-                default:
-                    tieScore = "Deuce";
-                    break;
-            }
-
-            result = tieScore;
+            result = TieScore(_player1.Score);
         }
-        else if (player1Score >= 4 || player2Score >= 4)
+        else if (_player1.Score >= 4 || _player2.Score >= 4)
         {
-            // end-game score
-            string endGameScore;
-
-            switch (player1Score - player2Score)
-            {
-                case 1:
-                    endGameScore = $"Advantage {player1Name}";
-                    break;
-                case -1:
-                    endGameScore = $"Advantage {player2Name}";
-                    break;
-                case >= 2:
-                    endGameScore = $"Win for {player1Name}";
-                    break;
-                default:
-                    endGameScore = $"Win for {player2Name}";
-                    break;
-            }
-
-            result = endGameScore;
+            result = EndGameScore(_player1, _player2);
         }
         else
         {
-            // regular score
-            string regularScore;
+            result = RegularScore(_player1, _player2);
+        }
+        return result;
+    }
 
-            var score1 = player1Score switch
-            {
-                0 => "Love",
-                1 => "Fifteen",
-                2 => "Thirty",
-                _ => "Forty"
-            };
+    private static string TieScore(int score)
+    {
+        return score < 3 ? $"{ScoreName(score)}-All" : "Deuce";
+    }
 
-            var score2 = player2Score switch
-            {
-                0 => "Love",
-                1 => "Fifteen",
-                2 => "Thirty",
-                _ => "Forty"
-            };
+    private static string ScoreName(int score)
+    {
+        string scoretext = score switch
+        {
+            0 => "Love",
+            1 => "Fifteen",
+            2 => "Thirty",
+            _ => "Forty"
+        };
+        return scoretext;
+    }
 
-            regularScore = $"{score1}-{score2}";
+    private static string RegularScore(Player6 player1, Player6 player2)
+    {
+        return $"{ScoreName(player1.Score)}-{ScoreName(player2.Score)}";
 
-            result = regularScore;
+    }
+
+    private static string EndGameScore(Player6 player1, Player6 player2)
+    {
+        string endGameScore;
+
+        switch (player1.Score - player2.Score)
+        {
+            case 1:
+                endGameScore = $"Advantage {player1.Name}";
+                break;
+            case -1:
+                endGameScore = $"Advantage {player2.Name}";
+                break;
+            case >= 2:
+                endGameScore = $"Win for {player1.Name}";
+                break;
+            default:
+                endGameScore = $"Win for {player2.Name}";
+                break;
+        }
+        return endGameScore;
+    }
+    public class Player6
+    {
+        public string Name { get; }
+        public int Score { get; private set; }
+
+        public Player6(string name)
+        {
+            Name = name;
+            Score = 0;
         }
 
-        return result;
+        public void AddPoint()
+        {
+            Score++;
+        }
     }
 }
