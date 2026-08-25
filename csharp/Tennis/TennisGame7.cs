@@ -25,51 +25,35 @@ public class TennisGame7 : ITennisGame
 
         if (_player1.Score == _player2.Score)
         {
-            result += TieGame(_player1, _player2);
+            result += TieScore(_player1, _player2);
         }
         else if (_player1.Score >= 4 || _player2.Score >= 4)
         {
-            // end-game score
             result += EndGameScore(_player1, _player2);
         }
         else
         {
             // regular score
-            result += _player1.Score switch
-            {
-                0 => "Love",
-                1 => "Fifteen",
-                2 => "Thirty",
-                _ => "Forty"
-            };
-
-            result += "-";
-
-            result += _player2.Score switch
-            {
-                0 => "Love",
-                1 => "Fifteen",
-                2 => "Thirty",
-                _ => "Forty"
-            };
+            result += RegularScore(_player1, _player2);
         }
 
         return result + ", enjoy your game!";
     }
 
+    private static string RegularScore(Player7 player1, Player7 player2)
+    {
+        return $"{ScoreName(player1.Score)}-{ScoreName(player2.Score)}";
+    }
+
     private static string EndGameScore(Player7 player1, Player7 player2)
     {
-        switch (player1.Score - player2.Score)
+        return (player1.Score - player2.Score) switch
         {
-            case 1:
-                return $"Advantage {player1.Name}";
-            case -1:
-                return $"Advantage {player2.Name}";
-            case >= 2:
-                return $"Win for {player1.Name}";
-            default:
-                return $"Win for {player2.Name}";
-        }
+            1 => $"Advantage {player1.Name}",
+            -1 => $"Advantage {player2.Name}",
+            >= 2 => $"Win for {player1.Name}",
+            _ => $"Win for {player2.Name}"
+        };
     }
     
     
@@ -84,7 +68,7 @@ public class TennisGame7 : ITennisGame
         };
         return scoretext;
     }
-    private static string TieGame(Player7 player1, Player7 player2)
+    private static string TieScore(Player7 player1, Player7 player2)
     {
         return player1.Score < 3 ? $"{ScoreName(player1.Score)}-All" : "Deuce";
     }
