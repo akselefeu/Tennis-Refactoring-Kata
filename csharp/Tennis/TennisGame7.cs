@@ -2,33 +2,31 @@ namespace Tennis;
 
 public class TennisGame7 : ITennisGame
 {
-    private int player1Score;
-    private int player2Score;
-    private string player1Name;
-    private string player2Name;
+    private Player7 _player1;
+    private Player7 _player2;
 
     public TennisGame7(string player1Name, string player2Name)
     {
-        this.player1Name = player1Name;
-        this.player2Name = player2Name;
+        _player1 = new Player7(player1Name);
+        _player2 = new Player7(player2Name);
     }
 
     public void WonPoint(string playerName)
     {
-        if (playerName == player1Name)
-            player1Score++;
-        else
-            player2Score++;
+        if (_player1.Name == playerName)
+            _player1.AddPoint();
+        else if (_player2.Name == playerName)
+            _player2.AddPoint();
     }
 
     public string GetScore()
     {
         string result = "Current score: ";
 
-        if (player1Score == player2Score)
+        if (_player1.Score == _player2.Score)
         {
             // tie score
-            switch (player1Score)
+            switch (_player1.Score)
             {
                 case 0:
                     result += "Love-All";
@@ -44,29 +42,29 @@ public class TennisGame7 : ITennisGame
                     break;
             }
         }
-        else if (player1Score >= 4 || player2Score >= 4)
+        else if (_player1.Score >= 4 || _player2.Score >= 4)
         {
             // end-game score
-            switch (player1Score - player2Score)
+            switch (_player1.Score - _player2.Score)
             {
                 case 1:
-                    result += $"Advantage {player1Name}";
+                    result += $"Advantage {_player1.Name}";
                     break;
                 case -1:
-                    result += $"Advantage {player2Name}";
+                    result += $"Advantage {_player2.Name}";
                     break;
                 case >= 2:
-                    result += $"Win for {player1Name}";
+                    result += $"Win for {_player1.Name}";
                     break;
                 default:
-                    result += $"Win for {player2Name}";
+                    result += $"Win for {_player2.Name}";
                     break;
             }
         }
         else
         {
             // regular score
-            result += player1Score switch
+            result += _player1.Score switch
             {
                 0 => "Love",
                 1 => "Fifteen",
@@ -76,7 +74,7 @@ public class TennisGame7 : ITennisGame
 
             result += "-";
 
-            result += player2Score switch
+            result += _player2.Score switch
             {
                 0 => "Love",
                 1 => "Fifteen",
