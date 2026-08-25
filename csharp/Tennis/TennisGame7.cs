@@ -21,8 +21,7 @@ public class TennisGame7 : ITennisGame
 
     public string GetScore()
     {
-        string coreScore = CalculateCoreScore();
-        return $"Current score: {coreScore}, enjoy your game!";
+        return $"Current score: {CalculateCoreScore()}, enjoy your game!";
     }
     private string CalculateCoreScore()
     {
